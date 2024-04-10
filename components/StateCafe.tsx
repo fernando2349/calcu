@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import {Button, View, Text, Image} from "react-native"
+import { View, Text} from "react-native";
+import { Button } from "react-native";
 
 type CatProps = {
     name: string;
@@ -10,14 +11,26 @@ const Cat =(props: CatProps) =>{
     return(
         <View>
         <Text>
-            Yo soy {props.name}, y Yo estoy {isHungry ? 'con hambre': 'lleno'}
+            Yo soy {props.name}, y Yo estoy {isHungry ? "con hambre" : "lleno"}
         </Text>
 
         <Button 
-        onPress={() =>{
+        onPress={() : void =>{
             setIsHungry(false);
         }}
-        title={isHungry ? 'Sirveme un poco de leche, por favor': 'gracias!!'}/>
+        disabled={isHungry}
+        title={isHungry ? "Sirveme un poco de leche, por favor" : "gracias!!"}/>
         </View>
     );
 }
+
+const StateCafe = () =>{
+    return(
+        <>
+        <Cat name="munkustrap"/>
+        <Cat name="Spot"/>
+        </>
+    )
+}
+
+export default StateCafe
