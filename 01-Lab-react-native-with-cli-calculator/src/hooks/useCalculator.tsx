@@ -1,13 +1,41 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+enum Operator{
+    add = '+',
+    subtract ='-',
+    multiply ='x',
+    divide ='÷',
+}
+
 
 export const useCalculator = () =>{
-    //
-
     //hooks
     const [number, setNumber] = useState('0');
+    const [prevNumber, setPrevNumber] = useState ('0');
+    const [formule, setFormule] = useState('');
+    const  lastOperation = useRef<Operator>();
+
+    useEffect(() =>{
+        if (lastOperation.current){
+            const firstFormulaPart = formule.split('').at(0);
+            setFormule(`${firstFormulaPart} ${lastOperation.current} ${number}`)      
+        }else{
+            setFormule(number);
+        }
+    }, [number]);
+
+    useEffect(() =>{
+        const subResult = calculatorSubResult();
+        setPrevNumber(`${subResult} `)
+    }, [formule]);
+
+
 
     const clean = () =>{
         setNumber('0');
+        setPrevNumber('0');
+        lastOperation.current = undefined;
+        setFormule('');
     };
 
     const deleteOperation = () =>{
@@ -22,7 +50,7 @@ export const useCalculator = () =>{
             return setNumber(currenSign + temporalnumber.slice(0, -1))
         }
         setNumber('0');
-    }
+    };
 
     const togglesign = () =>{
         if (number.includes('-')){
@@ -31,12 +59,9 @@ export const useCalculator = () =>{
         setNumber('-' + number);
     };
 
-
     const buildNumber = (numberString : string) =>{
 
-    if (number.includes('.')&& numberString === '.'){
-       return; 
-    } 
+    if (number.includes('.')&& numberString === '.') return; 
     if(number.startsWith('0') || number.startsWith('-0')){
         //punto decimal
         if (numberString ==='.'){
@@ -57,18 +82,93 @@ export const useCalculator = () =>{
         return setNumber(number + numberString);
     }
     setNumber(number + numberString);
+    };
+
+    const setLastNumber = () =>{
+        calculateResult();
+
+        if (number.endsWith('.')){
+            setPrevNumber(number.slice(0,-1));
+        }else{
+            setPrevNumber(number);
+        }
+        setNumber('0')
+    };
+
+    //Operaciones Aritmeticas 
+    const divideOperation = () =>{
+        setLastNumber();
+        lastOperation.current = Operator.divide;
+    };
+
+    const multiplyOperation = () =>{
+        setLastNumber();
+        lastOperation.current = Operator.multiply;
+    };
+
+    const addOperation = () =>{
+        setLastNumber();
+        lastOperation.current = Operator.add;
+    };
+
+    const subtractOperation = () =>{
+        setLastNumber();
+        lastOperation.current = Operator.subtract;
+    };
+
+    const calculateResult = () =>{
+    const result = calculatorSubResult();
+    setFormule(`${result} `);
+    lastOperation.current = undefined;
+       setPrevNumber('0')
+    };
+
+    const calculatorSubResult = () =>{
+        const [firstValue, operation, secondValue] = formule.split('')
+        
+        const num1 = Number( firstValue );
+        const num2 = Number( secondValue ); //NaN
+
+        if ( isNaN( num2 ) ) return num1;
+        switch (operation){
+            case Operator.add:
+                return num1 + num2;
+                
+            case Operator.subtract:
+                return num1 - num2;
+
+            case Operator.multiply:
+                return num1 * num2;
+
+            case Operator.divide:
+                return num1 / num2;
+
+            default:
+                //throw new Error( 'Invalid Operation' );
+        }
     }
- 
+
+    
+
+
 
 
     //return
 
     return{
         number,
+        prevNumber,
+        setLastNumber,
+        formule,
 
         buildNumber,
         togglesign,
         clean,
         deleteOperation,
+        divideOperation,
+        multiplyOperation,
+        addOperation,
+        subtractOperation,
+        calculateResult,
     };
 };
