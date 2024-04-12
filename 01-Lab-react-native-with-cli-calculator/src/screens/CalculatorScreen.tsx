@@ -8,7 +8,7 @@ export const CalculatorScreen = () =>{
         number,
         prevNumber,
         buildNumber,
-        togglesign,
+        toggleSing,
         clean,
         deleteOperation,
         divideOperation,
@@ -16,7 +16,7 @@ export const CalculatorScreen = () =>{
         addOperation,
         subtractOperation,
         calculateResult,
-        formule,
+        formula,
     } = useCalculator();
 
 
@@ -25,7 +25,7 @@ export const CalculatorScreen = () =>{
             <View style={{paddingHorizontal: 25, paddingBottom: 15}}>
             <Text adjustsFontSizeToFit 
             numberOfLines={1} 
-            style={styles.mainResult}>{formule}</Text>
+            style={styles.mainResult}>{formula}</Text>
             
             <Text 
             adjustsFontSizeToFit 
@@ -36,7 +36,7 @@ export const CalculatorScreen = () =>{
 
             <View style={styles.row}>
             <CalculatorButton onPress={clean} blackText label="C" color={colors.lightGray}/>
-            <CalculatorButton onPress={togglesign} blackText label="+/-" color={colors.lightGray}/>
+            <CalculatorButton onPress={toggleSing} blackText label="+/-" color={colors.lightGray}/>
             <CalculatorButton onPress={deleteOperation} blackText label="Del" color={colors.lightGray}/>
             <CalculatorButton onPress={divideOperation} label="÷" color={colors.orange}/>
             </View>
